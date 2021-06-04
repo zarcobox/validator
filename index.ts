@@ -29,7 +29,7 @@ class RequestCheck {
       let object = args.shift()
       if(!object) continue
       let field = Object.keys(object)[0], value = object[field]
-      if(!value && ![0, false].includes(value)) invalid.push({ 
+      if(!value && ![0, false, "0", "false"].includes(value)) invalid.push({ 
         field, message: this.requiredMessage
         .replace(':name', field).replace(':field', field).replace(':value', value)
       })
