@@ -99,3 +99,58 @@ test('it validates with separated rules from same variable', () => {
   ])
 
 })
+
+
+test('it validates with separated rules from same variable', () => {
+
+  validator.requiredMessage = 'The field :name is required!'
+
+  validator.addRule('age', { 
+    validator: (age: number) => age > 18, 
+    message:'You need to be at least 18 years old!' 
+  })
+
+  validator.addRule('age', {
+    validator: (age: any) => age < 23,
+    message: 'The age must be under 23!'
+  })
+
+  validator.addRule('color', { validator: (color: any) => color === 'blue', message: 'Color must be blue!'})
+
+  const request = {
+    name: 'Zarco',
+    age: '23',
+    color: 'yellow'
+  }
+
+  const { name, color, age } = request
+
+  const invalid = validator.check({name}, {age}, {color})
+
+  expect(invalid).toEqual([
+    { field: 'age', message: 'The age must be under 23!' },
+    { field: 'color', message: 'Color must be blue!' }
+  ])
+
+})
+
+
+test('it doesnt validate 0', () => {
+  
+  validator.rules = []
+
+  validator.requiredMessage = 'The field :name is required!'
+
+  const request = {
+    name: 'Zarco',
+    favoriteNumber: 0,
+    color: 'yellow'
+  }
+
+  const { name, color, favoriteNumber } = request
+
+  const invalid = validator.check({name}, {favoriteNumber}, {color})
+
+  expect(invalid).toEqual(undefined)
+
+})
